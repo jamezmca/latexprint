@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Worksheet Printer</title>
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #f5f5f7;
+      --fg: #111827;
+      --accent: #2563eb;
+      --border: #d1d5db;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+    }
+
+    .app-shell {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3rem;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .logo-mark {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      border: 2px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+    }
+
+    .controls {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.9rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+      background: white;
+    }
+
+    button.primary {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1rem;
+    }
+
+    .panel {
+      background: white;
+      border-radius: 0.75rem;
+      border: 1px solid var(--border);
+      padding: 1rem;
+    }
+
+    .panel h2 {
+      margin: 0 0 0.5rem;
+      font-size: 1rem;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 220px;
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+        "Liberation Mono", "Courier New", monospace;
+      font-size: 0.9rem;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      border: 1px solid var(--border);
+      resize: vertical;
+    }
+
+    .hint {
+      font-size: 0.8rem;
+      color: #6b7280;
+      margin-top: 0.25rem;
+    }
+
+    .output-wrapper {
+      padding: 1rem 1.5rem;
+      min-height: 400px;
+    }
+
+    .brand-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .brand-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .brand-subtitle {
+      font-size: 0.9rem;
+      color: #6b7280;
+    }
+
+    .rendered-output {
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    ol { padding-left: 1.4rem; }
+    li + li { margin-top: 0.25rem; }
+
+    @media print {
+      body { background: white; }
+
+      .app-shell {
+        max-width: 100%;
+        margin: 0;
+        padding: 0.5rem 1rem 0;
+      }
+
+      header,
+      .panel.input-panel { display: none !important; }
+
+      .panel.output-panel {
+        border: none;
+        padding: 0;
+      }
+
+      .output-wrapper { padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header>
+      <div class="logo">
+        <div class="logo-mark">𝓕</div>
+        <div>Factor &amp; Print</div>
+      </div>
+      <div class="controls">
+        <button class="primary" id="renderBtn">Render</button>
+        <button type="button" onclick="location.reload()">Clear / Refresh</button>
+        <button type="button" onclick="window.print()">Print</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="panel input-panel">
+        <h2>1. Paste your LaTeX document</h2>
+        <textarea id="latexInput" placeholder="Paste a full LaTeX article here, e.g. with \documentclass, \begin{document}, \begin{enumerate}, \item ..."></textarea>
+        <div class="hint">
+          This strips the preamble, converts <code>enumerate</code> to an ordered list, and renders maths inside
+          <code>\( ... \)</code>, <code>\[ ... \]</code>, or <code>$$...$$</code>.
+        </div>
+      </section>
+
+      <section class="panel output-panel">
+        <div class="output-wrapper">
+          <div class="brand-header">
+            <div>
+              <div class="brand-title">Math Worksheet</div>
+              <div class="brand-subtitle">Generated with Factor &amp; Print</div>
+            </div>
+            <div class="brand-subtitle" id="dateStamp"></div>
+          </div>
+          <div id="output" class="rendered-output">
+            <!-- Rendered content appears here -->
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    function processLatex(input) {
+      // Grab body between \begin{document} and \end{document}
+      const match = input.match(/\\begin{document}([\s\S]*?)\\end{document}/)
+      let body = match ? match[1] : input
+
+      // Trim leading/trailing whitespace
+      body = body.trim()
+
+      // Convert \begin{center}...\end{center} into a nice H1
+      body = body.replace(/\\begin{center}([\s\S]*?)\\end{center}/, (_, inner) => {
+        // crude cleanup for typical title pattern
+        let text = inner
+          .replace(/\\LARGE/g, '')
+          .replace(/\\Large/g, '')
+          .replace(/\\large/g, '')
+          .replace(/\\textbf{([^}]*)}/g, '$1')
+          .replace(/[{}]/g, '')
+          .replace(/\\\\/g, '')
+          .trim()
+        return `<h1>${text}</h1>`
+      })
+
+      // Convert enumerate environment to HTML ordered list
+      body = body.replace(/\\begin{enumerate}/g, '<ol>')
+                 .replace(/\\end{enumerate}/g, '</ol>')
+                 .replace(/\\item/g, '<li>')
+
+      // Simple paragraph breaks for blank lines
+      body = body.replace(/\n\s*\n/g, '<br><br>')
+
+      return body
+    }
+
+    function renderLatex() {
+      const input = document.getElementById('latexInput').value
+      const output = document.getElementById('output')
+
+      const html = processLatex(input)
+      output.innerHTML = html
+
+      // Ask KaTeX to render the maths
+      renderMathInElement(output, {
+        delimiters: [
+          { left: '$$', right: '$$', display: true },
+          { left: '\\[', right: '\\]', display: true },
+          { left: '\\(', right: '\\)', display: false }
+        ],
+        throwOnError: false
+      })
+    }
+
+    document.getElementById('renderBtn').addEventListener('click', renderLatex)
+
+    // date stamp in header
+    const dateStamp = document.getElementById('dateStamp')
+    const today = new Date()
+    dateStamp.textContent = today.toLocaleDateString(undefined, {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    })
+  </script>
+</body>
+</html>
