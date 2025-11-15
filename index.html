@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Worksheet Printer</title>
+  <title>latexprint.io</title>
 
   <!-- KaTeX -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
@@ -11,10 +11,10 @@
 
   <style>
     :root {
-      --bg: #f5f5f7;
-      --fg: #111827;
-      --accent: #2563eb;
-      --border: #d1d5db;
+      --bg: white;
+      --fg: #030615;
+      --accent: #030615;
+      --border: #e5e7eb;
     }
 
     * { box-sizing: border-box; }
@@ -33,6 +33,10 @@
     }
 
     header {
+      margin-bottom: 1rem;
+    }
+
+    .header-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -40,29 +44,38 @@
       margin-bottom: 1rem;
     }
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      font-weight: 700;
-      font-size: 1.1rem;
+    @media (max-width: 648px) {
+      .header-top {
+        justify-content: center;
+        margin-bottom: 0.5rem;
+      }
+      .controls-desktop {
+        display: none !important;
+      }
     }
 
-    .logo-mark {
-      width: 28px;
-      height: 28px;
-      border-radius: 999px;
-      border: 2px solid var(--accent);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.8rem;
+    @media (min-width: 649px) {
+      .controls-mobile {
+        display: none !important;
+      }
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 1.1rem;
     }
 
     .controls {
       display: flex;
       gap: 0.5rem;
       flex-wrap: wrap;
+    }
+
+    .controls-mobile {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.5rem;
+      width: 100%;
     }
 
     button {
@@ -176,12 +189,16 @@
 <body>
   <div class="app-shell">
     <header>
-      <div class="logo">
-        <div class="logo-mark">𝓕</div>
-        <div>Factor &amp; Print</div>
+      <div class="header-top">
+        <div class="logo">latexprint.io</div>
+        <div class="controls controls-desktop">
+          <button class="primary" id="renderBtn">Render</button>
+          <button type="button" onclick="location.reload()">Clear / Refresh</button>
+          <button type="button" onclick="window.print()">Print</button>
+        </div>
       </div>
-      <div class="controls">
-        <button class="primary" id="renderBtn">Render</button>
+      <div class="controls-mobile">
+        <button class="primary" id="renderBtn2">Render</button>
         <button type="button" onclick="location.reload()">Clear / Refresh</button>
         <button type="button" onclick="window.print()">Print</button>
       </div>
@@ -199,13 +216,6 @@
 
       <section class="panel output-panel">
         <div class="output-wrapper">
-          <div class="brand-header">
-            <div>
-              <div class="brand-title">Math Worksheet</div>
-              <div class="brand-subtitle">Generated with Factor &amp; Print</div>
-            </div>
-            <div class="brand-subtitle" id="dateStamp"></div>
-          </div>
           <div id="output" class="rendered-output">
             <!-- Rendered content appears here -->
           </div>
@@ -267,6 +277,7 @@
     }
 
     document.getElementById('renderBtn').addEventListener('click', renderLatex)
+    document.getElementById('renderBtn2').addEventListener('click', renderLatex)
 
     // date stamp in header
     const dateStamp = document.getElementById('dateStamp')
