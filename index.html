@@ -134,7 +134,7 @@
     }
 
     .output-wrapper {
-      padding: 1rem 1.5rem;
+      padding: 0.5rem 1.5rem;
       min-height: 400px;
     }
 
@@ -165,6 +165,56 @@
     ol { padding-left: 1.4rem; }
     li + li { margin-top: 0.25rem; }
 
+    .rendered-output h1 {
+      margin: 0;
+      margin-bottom: 0.25rem;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    .print-branding {
+      font-size: 0.75rem;
+      color: #6b7280;
+      margin-bottom: 0.5rem;
+      display: none;
+    }
+
+    @media print {
+      .print-branding {
+        display: block;
+      }
+    }
+
+    .collapsible-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .collapsible-content {
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .collapsible-content.collapsed {
+      max-height: 0;
+    }
+
+    .collapsible-content.expanded {
+      max-height: 500px;
+    }
+
+    .toggle-icon {
+      font-size: 0.8rem;
+      transition: transform 0.3s ease;
+    }
+
+    .toggle-icon.rotated {
+      transform: rotate(180deg);
+    }
+
     @media print {
       body { background: white; }
 
@@ -175,7 +225,8 @@
       }
 
       header,
-      .panel.input-panel { display: none !important; }
+      .panel.input-panel,
+      .panel.example-panel { display: none !important; }
 
       .panel.output-panel {
         border: none;
@@ -206,7 +257,7 @@
 
     <main>
       <section class="panel input-panel">
-        <h2>1. Paste your LaTeX document</h2>
+        <h2>3. Paste your LaTeX document</h2>
         <textarea id="latexInput" placeholder="Paste a full LaTeX article here, e.g. with \documentclass, \begin{document}, \begin{enumerate}, \item ..."></textarea>
         <div class="hint">
           This strips the preamble, converts <code>enumerate</code> to an ordered list, and renders maths inside
@@ -214,8 +265,28 @@
         </div>
       </section>
 
+      <section class="panel example-panel">
+        <div class="collapsible-header" onclick="toggleCollapsible()">
+          <h2>2. Example ChatGPT Prompt</h2>
+          <span class="toggle-icon" id="toggleIcon">▼</span>
+        </div>
+        <div class="collapsible-content collapsed" id="promptContent">
+          <textarea readonly style="min-height: 120px; background: #f8f9fa; cursor: text;">Generate [20] mathematics questions about [expanding quadratics]. Format them as a LaTeX document with:
+- A centered title: [Expanding Factorised Quadratics]
+- Each question as an \item in an enumerate environment
+- [2] line breaks between every question for spacing
+- Use proper LaTeX math formatting with \( \) for inline expressions
+- Include a mix of difficulty levels
+- Start with \documentclass[12pt]{article} and proper document structure</textarea>
+          <div class="hint">
+            Copy this prompt template to ChatGPT, replace the bracketed placeholders with your specific requirements, then paste the generated LaTeX above.
+          </div>
+        </div>
+      </section>
+
       <section class="panel output-panel">
         <div class="output-wrapper">
+          <div class="print-branding">latexprint.io</div>
           <div id="output" class="rendered-output">
             <!-- Rendered content appears here -->
           </div>
@@ -243,17 +314,27 @@
           .replace(/\\textbf{([^}]*)}/g, '$1')
           .replace(/[{}]/g, '')
           .replace(/\\\\/g, '')
+          .replace(/\[\d+pt\]/g, '')
           .trim()
-        return `<h1>${text}</h1>`
+        return `<h1 style="text-align: center;">${text}</h1>`
       })
+
+      // Convert LaTeX spacing commands to line breaks
+      body = body.replace(/\\\\\[\d+pt\]/g, '<br>')
+      body = body.replace(/\\\\/g, '<br>')
 
       // Convert enumerate environment to HTML ordered list
       body = body.replace(/\\begin{enumerate}/g, '<ol>')
                  .replace(/\\end{enumerate}/g, '</ol>')
                  .replace(/\\item/g, '<li>')
 
-      // Simple paragraph breaks for blank lines
-      body = body.replace(/\n\s*\n/g, '<br><br>')
+      // Clean up excessive whitespace and convert paragraph breaks
+      body = body.replace(/\n\s*\n+/g, '\n\n')
+      body = body.replace(/\n\n/g, '<br><br>')
+      
+      // Clean up any trailing breaks after h1
+      body = body.replace(/(<h1[^>]*>[^<]*<\/h1>)(<br><br>)+/g, '$1')
+      body = body.replace(/(<h1[^>]*>[^<]*<\/h1>)(<br>)+/g, '$1')
 
       return body
     }
@@ -278,6 +359,24 @@
 
     document.getElementById('renderBtn').addEventListener('click', renderLatex)
     document.getElementById('renderBtn2').addEventListener('click', renderLatex)
+
+    // Collapsible functionality
+    function toggleCollapsible() {
+      const content = document.getElementById('promptContent')
+      const icon = document.getElementById('toggleIcon')
+      
+      if (content.classList.contains('collapsed')) {
+        content.classList.remove('collapsed')
+        content.classList.add('expanded')
+        icon.textContent = '▲'
+        icon.classList.add('rotated')
+      } else {
+        content.classList.remove('expanded')
+        content.classList.add('collapsed')
+        icon.textContent = '▼'
+        icon.classList.remove('rotated')
+      }
+    }
 
     // date stamp in header
     const dateStamp = document.getElementById('dateStamp')
