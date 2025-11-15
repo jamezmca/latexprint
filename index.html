@@ -223,6 +223,40 @@
             transform: rotate(180deg);
         }
 
+        .intro-text {
+            font-size: 0.9rem;
+            color: #6b7280;
+            padding: 2rem 0;
+            line-height: 1.4;
+        }
+
+        .panel.example-panel {
+            background: white;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border);
+            padding: 1rem;
+        }
+        
+        .intro-text p {
+            margin: 0.5rem 0;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1rem;
+        }
+
+        footer a {
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
         @media print {
             body {
                 background: white;
@@ -269,26 +303,21 @@
                 <button type="button" onclick="window.print()">Print</button>
             </div>
         </header>
+        
+        <div class="intro-text">
+            <p><strong>1.</strong> Edit the ChatGPT prompt below to specify your topic, number of questions, and title.</p>
+            <p><strong>2.</strong> Copy the prompt and paste it into ChatGPT to generate your LaTeX document.</p>
+            <p><strong>3.</strong> Paste the generated LaTeX into the input box, render it, and print your perfectly formatted worksheet.</p>
+        </div>
 
         <main>
-            <section class="panel input-panel">
-                <h2>3. Paste your LaTeX document</h2>
-                <textarea id="latexInput"
-                    placeholder="Paste a full LaTeX article here, e.g. with \documentclass, \begin{document}, \begin{enumerate}, \item ..."></textarea>
-                <div class="hint">
-                    This strips the preamble, converts <code>enumerate</code> to an ordered list, and renders maths
-                    inside
-                    <code>\( ... \)</code>, <code>\[ ... \]</code>, or <code>$$...$$</code>.
-                </div>
-            </section>
-
             <section class="panel example-panel">
                 <div class="collapsible-header" onclick="toggleCollapsible()">
-                    <h2>2. Example ChatGPT Prompt</h2>
+                    <h2>1. ChatGPT Prompt</h2>
                     <span class="toggle-icon" id="toggleIcon">▼</span>
                 </div>
                 <div class="collapsible-content collapsed" id="promptContent">
-                    <textarea id="promptText" readonly style="min-height: 120px; background: #f8f9fa; cursor: text;">
+                    <textarea id="promptText" style="min-height: 120px; background: #f8f9fa; margin-left: 1rem; font-family: monospace; font-size: 0.85rem;">
 USER INPUTS (edit these):
 
 TITLE = [WRITE TITLE HERE]
@@ -338,9 +367,19 @@ Each question should relate to TOPIC and include a mix of difficulty levels, but
                         style="margin-top: 0.5rem; padding: 0.4rem 0.9rem; border-radius: 999px; border: 1px solid var(--border); background: var(--accent); color: white; cursor: pointer; font-size: 0.9rem;">Copy
                         Prompt</button>
                     <div class="hint">
-                        Copy this prompt template to ChatGPT, replace the bracketed placeholders with your specific
-                        requirements, then paste the generated LaTeX above.
+                        Edit the fields in brackets above, then copy this prompt to ChatGPT. It will generate LaTeX that you can paste into the input section below.
                     </div>
+                </div>
+            </section>
+
+            <section class="panel input-panel">
+                <h2>2. Paste your LaTeX document</h2>
+                <textarea id="latexInput"
+                    placeholder="Paste a full LaTeX article here, e.g. with \documentclass, \begin{document}, \begin{enumerate}, \item ..."></textarea>
+                <div class="hint">
+                    This strips the preamble, converts <code>enumerate</code> to an ordered list, and renders maths
+                    inside
+                    <code>\( ... \)</code>, <code>\[ ... \]</code>, or <code>$$...$$</code>.
                 </div>
             </section>
 
@@ -353,6 +392,10 @@ Each question should relate to TOPIC and include a mix of difficulty levels, but
                 </div>
             </section>
         </main>
+        
+        <footer>
+            <a href="https://github.com/jamesmcarthur/latexprint" target="_blank">github</a>
+        </footer>
     </div>
 
     <script>
@@ -440,16 +483,29 @@ Each question should relate to TOPIC and include a mix of difficulty levels, but
         document.getElementById('renderBtn').addEventListener('click', renderLatex)
         document.getElementById('renderBtn2')?.addEventListener('click', renderLatex)
 
-        // date stamp in header
-        const dateStamp = document.getElementById('dateStamp')
-        const today = new Date()
-        dateStamp.textContent = today.toLocaleDateString(undefined, {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
+        // Copy prompt functionality
+        document.getElementById('copyPromptBtn')?.addEventListener('click', function() {
+            const promptText = document.getElementById('promptText').value
+            navigator.clipboard.writeText(promptText).then(() => {
+                this.textContent = 'Copied!'
+                setTimeout(() => {
+                    this.textContent = 'Copy Prompt'
+                }, 2000)
+            })
         })
 
-        // Collapsible functionality (unchanged)
+        // date stamp in header
+        const dateStamp = document.getElementById('dateStamp')
+        if (dateStamp) {
+            const today = new Date()
+            dateStamp.textContent = today.toLocaleDateString(undefined, {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            })
+        }
+
+        // Collapsible functionality
         function toggleCollapsible() {
             const content = document.getElementById('promptContent')
             const icon = document.getElementById('toggleIcon')
