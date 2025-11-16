@@ -379,13 +379,12 @@
                 </div>
                 <div class="collapsible-content collapsed" id="promptContent">
                     <textarea id="promptText"
-                        style="min-height: 120px; background: #f8f9fa; margin-left: 1rem; font-family: monospace; font-size: 0.85rem;">
-USER INPUTS (edit these):
+                        style="min-height: 120px; background: #f8f9fa; margin-left: 1rem; font-family: monospace; font-size: 0.85rem;">USER INPUTS (edit these):
 
-TITLE = [WRITE TITLE HERE]
-TOPIC = [WRITE TOPIC HERE]
-NUMBER_OF_QUESTIONS = [WRITE NUMBER HERE]
-NUM_LINES_BETWEEN_QUESTIONS = [WRITE NUMBER HERE]
+TITLE = Expanding quadratics
+TOPIC = Expanding quadratics
+NUMBER_OF_QUESTIONS = 50
+NUM_LINES_BETWEEN_QUESTIONS = 2
 
 INSTRUCTIONS FOR CHATGPT (do not edit):
 
@@ -400,7 +399,7 @@ Use proper document structure with \begin{document} and \end{document}.
 
 Create a centered title using only:
 \begin{center}
-{\LARGE \textbf{TITLE}}[6pt]
+{\LARGE \textbf{TITLE}}\[6pt]
 \end{center}
 
 Then create one enumerate environment.
@@ -411,15 +410,23 @@ Each question must be a single \item inside that enumerate.
 
 Do not nest lists. Do not use itemize.
 
-After every question, add exactly NUM_LINES_BETWEEN_QUESTIONS line breaks using [12pt].
+After every question, add exactly NUM_LINES_BETWEEN_QUESTIONS LaTeX line breaks using \[12pt]. For example, if NUM_LINES_BETWEEN_QUESTIONS = 2, end each question with \[12pt]\[12pt].
 
 Use only these text formatting commands: \textbf{}, \emph{}, \textit{}.
 
 Do not use any other text environments (no section, subsection, tabular, figure, etc).
 
 Use LaTeX math properly:
-Use ( ... ) for inline math.
-Use [ ... ] for display math.
+Use 
+.
+.
+.
+... or $...$ for inline math.
+Use 
+.
+.
+.
+... for display math.
 You may use standard amsmath structures such as fractions, limits, trig functions, logs, and the cases environment.
 
 Do not use custom commands such as \newcommand or \renewcommand.
