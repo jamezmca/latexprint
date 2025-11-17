@@ -505,9 +505,8 @@ Each question should relate to TOPIC and include a mix of difficulty levels, but
             body = body.replace(/\\section\*?{([^}]*)}/g, '<h2>$1</h2>')
             body = body.replace(/\\subsection\*?{([^}]*)}/g, '<h3>$1</h3>')
 
-            // 4. Line breaks like \\[12pt] or \\ → <br>
-            // Convert LaTeX spacing commands like \\[12pt] to line breaks
-            body = body.replace(/\\\\\[\s*\d+pt\s*\]/g, '<br><br>')
+            // 4. Line breaks like \\[12pt] → <br><br>
+            body = body.replace(/\\\\\s*\[\s*\d+pt\s*\]/g, '<br><br>')
             // NOTE: do NOT replace bare \\ globally – they are needed inside maths
 
             // 5. enumerate → ordered list
@@ -531,10 +530,14 @@ Each question should relate to TOPIC and include a mix of difficulty levels, but
             body = body.replace(/\n\n/g, '<br><br>')
 
             // 9. Clean up extra breaks after <h1>
-            body = body.replace(/(<h1>[^<]*<\/h1>)(<br><br>)+/g, '$1')
+            body = body.replace(/(<h1[^>]*>[\s\S]*?<\/h1>)(\s*<br><br>)+/g, '$1')
+
+            // 10. Clean up extra breaks immediately after <ol> before first <li>
+            body = body.replace(/(<ol[^>]*>)\s*(<br><br>\s*)+/g, '$1')
 
             return body
         }
+
 
         function renderLatex() {
             const input = document.getElementById('latexInput').value
