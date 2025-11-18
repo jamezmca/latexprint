@@ -378,6 +378,7 @@
                     <span class="toggle-icon" id="toggleIcon">▼</span>
                 </div>
                 <div class="collapsible-content collapsed" id="promptContent">
+                    <!-- v.1.1 (1.0 working) -->
                     <textarea id="promptText"
                         style="min-height: 120px; background: #f8f9fa; margin-left: 1rem; font-family: monospace; font-size: 0.85rem;">USER INPUTS (edit these):
 
@@ -420,13 +421,19 @@ Use only these text formatting commands: \textbf{}, \emph{}, \textit{}.
 Do not use any other text environments (no section, subsection, tabular, figure, etc).
 
 Use LaTeX math properly:
-Use \( ... \) or $...$ for inline math.
+Use \( ... \) for inline math.
 Use \[ ... \] for display math.
+Do NOT use $...$ as a math delimiter anywhere.
+
+For money, write dollar amounts using an escaped dollar sign outside math, e.g.:
+"Share \$72 in the ratio \(5:4\)."
+
 You may use standard amsmath structures such as fractions, limits, trig functions, logs, and the cases environment.
 
 Do not use custom commands such as \newcommand or \renewcommand.
 
 Each question should relate to TOPIC and include a mix of difficulty levels, but stay within plain text plus math following the rules above.
+
 
 </textarea>
                     <button id="copyPromptBtn"
