@@ -403,6 +403,11 @@ Create a centered title using only:
 {\LARGE \textbf{TITLE}}\\[6pt]
 \end{center}
 
+After the main title you may optionally include subheadings, but only in this form:
+\section*{Subheading text}
+
+You may use at most a small number of these subheadings (for example, to separate easier and harder questions). Do NOT use \subsection, \subsubsection, \paragraph, \subparagraph, or any other heading or sectioning commands.
+
 Then create one enumerate environment.
 
 Create exactly NUMBER_OF_QUESTIONS questions.
@@ -418,15 +423,18 @@ For example, if NUM_LINES_BETWEEN_QUESTIONS = 2, end each question with:
 
 Use only these text formatting commands: \textbf{}, \emph{}, \textit{}.
 
-Do not use any other text environments (no section, subsection, tabular, figure, etc).
+Do not use any other text environments (no section, subsection, tabular, figure, etc.), except for the optional \section* subheadings described above.
 
 Use LaTeX math properly:
 Use \( ... \) for inline math.
 Use \[ ... \] for display math.
 Do NOT use $...$ as a math delimiter anywhere.
 
-For money, write dollar amounts using an escaped dollar sign outside math, e.g.:
-"Share \$72 in the ratio \(5:4\)."
+For money amounts, write a plain dollar sign with no backslash, for example:
+"Share $18,000 in the ratio \(2:3:4\)."
+
+For percentages inside math, use \% (for example \(15\%\)).
+For percentages in plain text (not in math), you may write 15%.
 
 You may use standard amsmath structures such as fractions, limits, trig functions, logs, and the cases environment.
 
