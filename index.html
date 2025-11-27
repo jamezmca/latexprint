@@ -508,7 +508,7 @@ Each question should relate to TOPIC and include a mix of difficulty levels, but
                     .replace(/\\LARGE/g, '')
                     .replace(/\\Large/g, '')
                     .replace(/\\large/g, '')
-                    .replace(/\\textbf{([^}]*)}/g, '$1')
+                    .replace(/\\textbf\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}/g, '$1')
                     .replace(/[{}]/g, '')
                     .replace(/\\\\/g, '')
                     .replace(/\[\d+pt\]/g, '')
@@ -536,9 +536,9 @@ Each question should relate to TOPIC and include a mix of difficulty levels, but
                 .replace(/\\end{itemize}/g, '</ul>')
 
             // 7. Basic text formatting
-            body = body.replace(/\\textbf{([^}]*)}/g, '<strong>$1</strong>')
-            body = body.replace(/\\emph{([^}]*)}/g, '<em>$1</em>')
-            body = body.replace(/\\textit{([^}]*)}/g, '<em>$1</em>')
+            body = body.replace(/\\textbf\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}/g, '<strong>$1</strong>')
+            body = body.replace(/\\emph\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}/g, '<em>$1</em>')
+            body = body.replace(/\\textit\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}/g, '<em>$1</em>')
 
             // 8. Paragraph-ish breaks for blank lines
             body = body.replace(/\n\s*\n+/g, '\n\n')
@@ -566,8 +566,7 @@ Each question should relate to TOPIC and include a mix of difficulty levels, but
                 delimiters: [
                     { left: '$$', right: '$$', display: true },
                     { left: '\\[', right: '\\]', display: true },
-                    { left: '\\(', right: '\\)', display: false },
-                    { left: '$', right: '$', display: false } // optional, but handy
+                    { left: '\\(', right: '\\)', display: false }
                 ],
                 throwOnError: false
             })
