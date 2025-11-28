@@ -380,7 +380,8 @@
                 <div class="collapsible-content collapsed" id="promptContent">
                     <!-- v.1.1 (1.0 working) -->
                     <textarea id="promptText"
-                        style="min-height: 120px; background: #f8f9fa; margin-left: 1rem; font-family: monospace; font-size: 0.85rem;">USER INPUTS (edit these):
+                        style="min-height: 120px; background: #f8f9fa; margin-left: 1rem; font-family: monospace; font-size: 0.85rem;">
+USER INPUTS (edit these):
 
 TITLE = [WRITE TITLE HERE]
 TOPIC = [WRITE TOPIC HERE]
@@ -389,7 +390,7 @@ NUM_LINES_BETWEEN_QUESTIONS = [WRITE NUMBER HERE E.G. 2]
 
 INSTRUCTIONS FOR CHATGPT (do not edit):
 
-Write a LaTeX document that follows these rules:
+Write a LaTeX document that follows these rules exactly:
 
 Use the article class with 12pt font:
 \documentclass[12pt]{article}
@@ -403,44 +404,128 @@ Create a centered title using only:
 {\LARGE \textbf{TITLE}}\\[6pt]
 \end{center}
 
-After the main title you may optionally include subheadings, but only in this form:
+After the main title you may optionally include subheadings, but ONLY in this exact form:
 \section*{Subheading text}
 
-You may use at most a small number of these subheadings (for example, to separate easier and harder questions). Do NOT use \subsection, \subsubsection, \paragraph, \subparagraph, or any other heading or sectioning commands.
+Do NOT use \subsection, \subsubsection, \paragraph, \subparagraph, or any other heading commands.
 
-Then create one enumerate environment.
+Then create exactly ONE enumerate environment.
 
 Create exactly NUMBER_OF_QUESTIONS questions.
 
 Each question must be a single \item inside that enumerate.
 
-Do not nest lists. Do not use itemize.
+Do NOT nest lists. Do NOT use itemize.
 
-After every question, add exactly NUM_LINES_BETWEEN_QUESTIONS LaTeX line breaks using \\[12pt].
-For example, if NUM_LINES_BETWEEN_QUESTIONS = 2, end each question with:
+After every question, add exactly NUM_LINES_BETWEEN_QUESTIONS LaTeX line breaks using:
+\\[12pt]
+
+If NUM_LINES_BETWEEN_QUESTIONS = 2, then this must appear twice:
 \\[12pt]
 \\[12pt]
 
-Use only these text formatting commands: \textbf{}, \emph{}, \textit{}.
+TEXT FORMATTING RULES (STRICT):
 
-Do not use any other text environments (no section, subsection, tabular, figure, etc.), except for the optional \section* subheadings described above.
+- Do NOT use \textit{} anywhere.
+- Do NOT use \emph{} anywhere.
+- If you need emphasis, you may use \textbf{} ONLY for short plain text phrases that do NOT contain any maths, backslashes, or braces.
+- Do NOT wrap any maths, formulas, or fractions in \textbf{}.
 
-Use LaTeX math properly:
-Use \( ... \) for inline math.
-Use \[ ... \] for display math.
-Do NOT use $...$ as a math delimiter anywhere.
+Do NOT use any other text environments (no section, subsection, tabular, figure, etc.), except for the optional \section* headings described above.
 
-For money amounts, write a plain dollar sign with no backslash, for example:
-"Share $18,000 in the ratio \(2:3:4\)."
+--------------------------------
+MATH RULES (STRICT)
+--------------------------------
 
-For percentages, do NOT put them inside math delimiters. Write them as normal text, e.g. "an interest rate of 4% per year", not "\(4\%\)".
-For percentages in plain text (not in math), you may write 15%.
+Use LaTeX math properly and consistently:
 
-You may use standard amsmath structures such as fractions, limits, trig functions, logs, and the cases environment.
+INLINE MATH:
+- Use \( ... \) ONLY.
+- NEVER use $...$ for inline math.
 
-Do not use custom commands such as \newcommand or \renewcommand.
+DISPLAY MATH:
+- Use \[ ... \] ONLY.
 
-Each question should relate to TOPIC and include a mix of difficulty levels, but stay within plain text plus math following the rules above.
+DO NOT use $...$ as a math delimiter anywhere in the entire document.
+DO NOT use standalone $ for maths under any circumstances.
+
+--------------------------------
+FRACTION RULES (CRITICAL)
+--------------------------------
+
+When using fractions:
+
+- You MUST always use the exact structure:
+  \frac{numerator}{denominator}
+
+- You MUST always include BOTH sets of braces.
+- You MUST always include the slash between them.
+- You MUST never place equals signs, commas, words, or extra braces inside \frac{}.
+
+Correct example:
+"The growth factor is \( \frac{A}{P} = 1.21 \)."
+
+Incorrect examples to avoid at all costs:
+\frac{A{P}
+\frac{A{P} = 1.21
+\frac{r{n}
+\frac{0.06{2}
+\frac{n{t}
+
+If a formula becomes complicated, rewrite it in multiple clean steps using separate inline equations.
+
+--------------------------------
+MONEY + PERCENTAGE RULES (CRITICAL)
+--------------------------------
+
+MONEY:
+- Write money using a plain dollar sign with NO backslash.
+- Example: $18,000
+- NEVER write \$18,000 anywhere.
+
+PERCENTAGES:
+- In plain text: write 10%, 4%, 15% with NO backslash.
+- ONLY use \% if the percentage is inside \( ... \).
+- Do NOT write 10\% in plain text.
+- Do NOT write "\(10\%\)" unless it is part of a symbolic expression.
+
+Correct:
+"Apply a 10% increase."
+"The rate is \(10\%\)."
+
+Incorrect:
+"Apply a 10\% increase."
+"\(10\%\) interest rate" when not part of a formula.
+
+--------------------------------
+FORMULA + HINT RULES
+--------------------------------
+
+If a hint contains a formula:
+
+- Wrap the ENTIRE formula in \( ... \).
+- Do NOT mix surrounding text inside the math.
+- Do NOT use $...$.
+
+Correct:
+"Hint: \( A = P(1 + r)^n \)."
+
+Incorrect:
+"Hint: $A = P(1+r)^n$"
+"Hint: \( A = P(1+r)^n$"
+"Hint: $\frac{A{P}"
+
+--------------------------------
+GENERAL CONTENT RULES
+--------------------------------
+
+You may use standard amsmath structures such as:
+fractions, limits, trig functions, logarithms, powers, and the cases environment.
+
+Do NOT use custom commands such as:
+\newcommand or \renewcommand.
+
+Each question should relate to TOPIC and include a mix of difficulty levels, but MUST strictly follow all formatting rules above.
 
 
 </textarea>
